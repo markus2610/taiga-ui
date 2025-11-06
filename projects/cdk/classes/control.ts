@@ -4,6 +4,7 @@ import {
     Directive,
     inject,
     Input,
+    type OnDestroy,
     type Provider,
     signal,
     type Type,
@@ -31,6 +32,7 @@ import {
     switchMap,
 } from 'rxjs';
 
+import {TuiControlStateAdapter} from './control-state-adapter';
 import {TUI_IDENTITY_VALUE_TRANSFORMER, TuiValueTransformer} from './value-transformer';
 
 const FLAGS = {self: true, optional: true};
@@ -39,11 +41,14 @@ const FLAGS = {self: true, optional: true};
  * Basic ControlValueAccessor class to build form components upon
  */
 @Directive()
-export abstract class TuiControl<T> implements ControlValueAccessor {
+export abstract class TuiControl<T> implements ControlValueAccessor, OnDestroy {
     private readonly fallback = inject(TUI_FALLBACK_VALUE, FLAGS) as T;
     private readonly refresh$ = new Subject<void>();
     private readonly pseudoInvalid = signal<boolean | null>(null);
     private readonly internal = signal(this.fallback);
+    private readonly stateAdapter = inject(TuiControlStateAdapter, {
+        optional: true,
+    }) as TuiControlStateAdapter<T> | null;
 
     protected readonly control = inject(NgControl, {self: true});
     protected readonly cdr = inject(ChangeDetectorRef);
@@ -72,6 +77,15 @@ export abstract class TuiControl<T> implements ControlValueAccessor {
 
     constructor() {
         this.control.valueAccessor = this;
+
+        // If a state adapter is provided, initialize it and skip RxJS subscription
+        if (this.stateAdapter) {
+            this.stateAdapter.setup(this);
+
+            return;
+        }
+
+        // Default RxJS-based synchronization for standard NgControl
         this.refresh$
             .pipe(
                 delay(0),
@@ -136,7 +150,20 @@ export abstract class TuiControl<T> implements ControlValueAccessor {
         this.update();
     }
 
+    public ngOnDestroy(): void {
+        this.stateAdapter?.destroy?.();
+    }
+
     private update(): void {
+        // If an adapter is provided, delegate to it
+        if (this.stateAdapter) {
+            this.stateAdapter.update(this);
+            this.cdr.markForCheck();
+
+            return;
+        }
+
+        // Default behavior when no adapter is provided
         this.status.set(this.control.control?.status);
         this.touched.set(!!this.control.control?.touched);
         this.cdr.markForCheck();
