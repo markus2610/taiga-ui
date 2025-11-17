@@ -1,4 +1,3 @@
-export * from '@taiga-ui/core/components/alert';
 export * from '@taiga-ui/core/components/button';
 export * from '@taiga-ui/core/components/calendar';
 export * from '@taiga-ui/core/components/cell';
@@ -6,7 +5,6 @@ export * from '@taiga-ui/core/components/data-list';
 export * from '@taiga-ui/core/components/dialog';
 export * from '@taiga-ui/core/components/error';
 export * from '@taiga-ui/core/components/expand';
-export * from '@taiga-ui/core/components/header';
 export * from '@taiga-ui/core/components/icon';
 export * from '@taiga-ui/core/components/label';
 export * from '@taiga-ui/core/components/link';

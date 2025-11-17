@@ -3,7 +3,7 @@ import {
     computed,
     Directive,
     inject,
-    Input,
+    input,
     type OnDestroy,
     type Provider,
     signal,
@@ -44,7 +44,6 @@ const FLAGS = {self: true, optional: true};
 export abstract class TuiControl<T> implements ControlValueAccessor, OnDestroy {
     private readonly fallback = inject(TUI_FALLBACK_VALUE, FLAGS) as T;
     private readonly refresh$ = new Subject<void>();
-    private readonly pseudoInvalid = signal<boolean | null>(null);
     private readonly internal = signal(this.fallback);
     private readonly stateAdapter = inject(TuiControlStateAdapter, {
         optional: true,
@@ -56,7 +55,8 @@ export abstract class TuiControl<T> implements ControlValueAccessor, OnDestroy {
         inject(TuiValueTransformer, FLAGS) ?? TUI_IDENTITY_VALUE_TRANSFORMER;
 
     public readonly value = computed(() => this.internal() ?? this.fallback);
-    public readonly readOnly = signal(false);
+    public readonly readOnly = input(false);
+    public readonly pseudoInvalid = input<boolean | null>(null, {alias: 'invalid'});
     public readonly touched = signal(false);
     public readonly status = signal<FormControlStatus | undefined>(undefined);
     public readonly disabled = computed(() => this.status() === 'DISABLED');
@@ -103,16 +103,6 @@ export abstract class TuiControl<T> implements ControlValueAccessor, OnDestroy {
                 takeUntilDestroyed(),
             )
             .subscribe(() => this.update());
-    }
-
-    @Input('readOnly')
-    public set readOnlySetter(readOnly: boolean) {
-        this.readOnly.set(readOnly);
-    }
-
-    @Input('invalid')
-    public set invalidSetter(invalid: boolean | null) {
-        this.pseudoInvalid.set(invalid);
     }
 
     public registerOnChange(onChange: (value: unknown) => void): void {

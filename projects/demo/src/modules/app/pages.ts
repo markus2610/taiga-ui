@@ -174,12 +174,6 @@ export const pages: DocRoutePages = [
     },
     {
         section: 'Components',
-        title: 'Alert',
-        keywords: 'уведомление, нотификация, бабл, облачко, alert, notification',
-        route: DemoRoute.Alert,
-    },
-    {
-        section: 'Components',
         title: 'Avatar',
         keywords: 'аватар, image, pic, icon, картинка, изображение, avatar, stack',
         route: DemoRoute.Avatar,
@@ -272,6 +266,12 @@ export const pages: DocRoutePages = [
                 meta: {
                     name: 'tui-button-group-card',
                 },
+            },
+            {
+                section: 'Components',
+                title: 'ButtonSelect',
+                keywords: 'кнопка, button, select, multiselect',
+                route: DemoRoute.ButtonSelect,
             },
         ],
     },

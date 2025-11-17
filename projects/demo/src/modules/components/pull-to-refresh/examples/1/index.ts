@@ -8,10 +8,11 @@ import {
     TuiPullToRefresh,
 } from '@taiga-ui/addon-mobile';
 import {TUI_IS_ANDROID, TUI_IS_IOS} from '@taiga-ui/cdk';
-import {TuiAlertService, TuiButton} from '@taiga-ui/core';
+import {TuiButton, TuiNotificationService} from '@taiga-ui/core';
 import {Subject} from 'rxjs';
 
 @Component({
+    selector: 'example-1',
     imports: [TuiButton, TuiPullToRefresh],
     templateUrl: './index.html',
     encapsulation,
@@ -36,7 +37,7 @@ import {Subject} from 'rxjs';
     ],
 })
 export default class Example {
-    private readonly alerts = inject(TuiAlertService);
+    private readonly alerts = inject(TuiNotificationService);
     private readonly loaded$ = inject<Subject<void>>(TUI_PULL_TO_REFRESH_LOADED);
 
     protected onPull(): void {

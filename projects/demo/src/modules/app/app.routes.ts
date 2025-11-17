@@ -270,6 +270,11 @@ export const ROUTES: Routes = [
         loadComponent: async () => import('../components/button-group'),
     }),
     route({
+        path: DemoRoute.ButtonSelect,
+        title: 'ButtonSelect',
+        loadComponent: async () => import('../components/button-select'),
+    }),
+    route({
         path: DemoRoute.Calendar,
         title: 'Calendar',
         loadComponent: async () => import('../components/calendar'),
@@ -986,11 +991,6 @@ export const ROUTES: Routes = [
         title: 'StringifyContent',
     }),
     // SERVICES
-    route({
-        path: DemoRoute.Alert,
-        title: 'Alert',
-        loadComponent: async () => import('../components/alert'),
-    }),
     route({
         path: DemoRoute.BreakpointService,
         loadComponent: async () => import('../components/services/breakpoint-service'),
